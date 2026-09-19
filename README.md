@@ -252,3 +252,19 @@ It assumes:
 - fixed inspection and rework probabilities.
 
 For real decision support, distribution parameters and economic coefficients would need to be estimated and validated from plant data.
+
+## Neural surrogate-assisted search for larger design spaces
+
+The original 50-design grid remains small enough for exact sample-average enumeration and should continue to use it. A separate extension, [`neural_surrogate_optimization.py`](neural_surrogate_optimization.py), studies the regime where the design space is enlarged to thousands of buffer/staffing combinations and replicated DES evaluations become the expensive resource.
+
+The extension trains a neural profit surrogate on a limited set of true DES evaluations, repeatedly evaluates predicted-promising designs, and independently validates the selected design. A random-search baseline receives the same design-evaluation and replication budget.
+
+Install and run:
+
+```bash
+pip install -r requirements-surrogate.txt
+python neural_surrogate_optimization.py
+```
+
+See [`SURROGATE_OPTIMIZATION.md`](SURROGATE_OPTIMIZATION.md) for the experimental design and limitations. This extension is not claimed to improve on enumeration for the repository's original small grid; its purpose is budgeted simulation optimization when exhaustive replicated evaluation is no longer practical.
+
