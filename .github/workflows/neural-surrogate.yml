@@ -1,0 +1,32 @@
+name: neural-surrogate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  neural-surrogate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install neural surrogate dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-surrogate.txt
+
+      - name: Compile neural extension
+        run: python -m compileall -q neural_surrogate_optimization.py tests/test_neural_surrogate.py
+
+      - name: Run neural surrogate tests
+        run: python -m unittest tests.test_neural_surrogate -v
+
+      - name: Run neural surrogate smoke search
+        run: python neural_surrogate_optimization.py --smoke
