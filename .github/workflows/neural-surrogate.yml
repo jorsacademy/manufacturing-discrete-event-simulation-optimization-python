@@ -26,7 +26,7 @@ jobs:
         run: python -m compileall -q neural_surrogate_optimization.py tests/test_neural_surrogate.py
 
       - name: Run neural surrogate tests
-        run: python -m unittest tests.test_neural_surrogate -v
+        run: python -m unittest discover -s tests -p 'test_neural_surrogate.py' -v
 
       - name: Run neural surrogate smoke search
         run: python neural_surrogate_optimization.py --smoke
