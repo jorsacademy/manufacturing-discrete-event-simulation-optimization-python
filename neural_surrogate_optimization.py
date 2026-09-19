@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 from dataclasses import dataclass
 from typing import Iterable
 
@@ -225,8 +226,26 @@ def surrogate_assisted_search(config: SurrogateSearchConfig = SurrogateSearchCon
     )
 
 
-def main() -> None:
-    result = surrogate_assisted_search()
+def main(smoke: bool = False) -> None:
+    config = (
+        SurrogateSearchConfig(
+            buffer_min=1,
+            buffer_max=4,
+            technicians=(1,),
+            initial_designs=4,
+            active_rounds=1,
+            batch_designs=2,
+            selection_replications=1,
+            validation_replications=2,
+            hidden_dim=16,
+            epochs=20,
+            warmup_hours=1.0,
+            measurement_hours=3.0,
+        )
+        if smoke
+        else SurrogateSearchConfig()
+    )
+    result = surrogate_assisted_search(config)
     print("Neural surrogate-assisted DES optimization")
     print("selected:", result.selected_design, result.selected_validation_profit)
     print("random:  ", result.random_baseline_design, result.random_baseline_validation_profit)
@@ -235,4 +254,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--smoke", action="store_true")
+    args = parser.parse_args()
+    main(smoke=args.smoke)
